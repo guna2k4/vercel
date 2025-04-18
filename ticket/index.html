@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Sri MuthuMariyamman Blue Metals</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+    .sidebar { background: #fff; border-right:1px solid #ccc; height:100vh; padding:20px; }
+    .header-title {
+      font-size:1.8rem; font-weight:bold;
+      background:linear-gradient(to right,orange,green,blue,purple);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      text-align:center;
+    }
+    .gradient-btn {
+      background:linear-gradient(to right,#ff6a00,#ee0979,#17ead9,#00ff6a);
+      color:#fff; border:none;
+    }
+    .gradient-btn:hover { opacity:0.9; }
+    #preview {
+      background:#fff; border:1px solid #ccc;
+      width:300px; padding:10px; margin:20px auto;
+      font-family:monospace; font-size:12px; white-space:pre-wrap;
+    }
+    @media print {
+      body *{visibility:hidden!important;}
+      #preview, #preview *{visibility:visible!important;}
+      #preview{
+        position:absolute; top:0; left:0;
+        width:80mm; padding:5mm; box-sizing:border-box;
+      }
+      @page{size:80mm auto; margin:0;}
+    }
+    @media(max-width:768px){
+      .sidebar { height:auto; border-right:none; border-bottom:1px solid #ccc; }
+      .header-title { font-size:1.5rem; }
+      #preview { width:95%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row flex-md-nowrap">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar">
+      <h5 class="text-danger fw-bold mb-3">Menu</h5>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#partyModal">Create Party Name</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#materialModal">Create Material Name</button>
+        <button class="btn btn-danger" onclick="resetForm()">Reset Ticket Number</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="col-md-10 main-container">
+      <div class="card shadow p-4 mb-4">
+        <div class="header-title mb-4">Sri MuthuMariyamman Blue Metals</div>
+        <form id="ticketForm">
+          <div class="row mb-3">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="ticketNumber">Ticket Number</label>
+              <input id="ticketNumber" type="number" class="form-control" value="1" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="truckNumber">Truck Number</label>
+              <input id="truckNumber" type="text" class="form-control" placeholder="e.g., TN23AB1234" required />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="material">Material</label>
+              <div class="input-group">
+                <input id="material" type="text" class="form-control" placeholder="Choose or type" required />
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                <ul class="dropdown-menu dropdown-menu-end" id="materialDropdown"></ul>
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="unit">Unit</label>
+              <input id="unit" type="text" class="form-control" placeholder="e.g., Tons" />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label" for="party">Party</label>
+              <div class="input-group">
+                <input id="party" type="text" class="form-control" placeholder="Choose or type" required />
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                <ul class="dropdown-menu dropdown-menu-end" id="partyDropdown"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="date">Date</label>
+              <input id="date" type="date" class="form-control" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="time">Time</label>
+              <input id="time" type="text" class="form-control" readonly />
+            </div>
+          </div>
+
+          <button type="button" class="btn gradient-btn w-100 mt-2" onclick="submitForm()">Let's Hit the Road!</button>
+        </form>
+
+        <!-- Alert message -->
+        <div id="message" class="alert d-none mt-3"></div>
+      </div>
+
+      <!-- Preview & Print -->
+      <div id="preview" class="shadow d-none"></div>
+      <button id="printBtn" class="btn btn-secondary w-100 mb-4 d-none" onclick="printSlip()">Print Slip</button>
+      <div class="footer text-muted">Made with ? for Sri MuthuMariyamman Blue Metals</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="partyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Party</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input id="newPartyInput" class="form-control" placeholder="Party name" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="addParty()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="materialModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Material</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input id="newMaterialInput" class="form-control" placeholder="Material name" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-success btn-sm" onclick="addMaterial()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = 'https://kiefmcjhsdmgfnqfttnw.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZWZtY2poc2RtZ2ZucWZ0dG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5NTQ4MTYsImV4cCI6MjA2MDUzMDgxNn0.DWR-ZKWzqcCWR8MPFnVRnO3YhiTZr_pwJMQaJaEgRZ4';
+
+  const { createClient } = supabase;
+  const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const parties = [], materials = [];
+  const partyDropdown = document.getElementById('partyDropdown');
+  const materialDropdown = document.getElementById('materialDropdown');
+
+  function updateDropdown(dd, list, inputId) {
+    dd.innerHTML = '';
+    list.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `<a class="dropdown-item" href="#">${item}</a>`;
+      li.onclick = () => (document.getElementById(inputId).value = item);
+      dd.appendChild(li);
+    });
+  }
+
+  function addParty() {
+    const val = document.getElementById('newPartyInput').value.trim();
+    if (!val) return;
+    parties.push(val);
+    updateDropdown(partyDropdown, parties, 'party');
+    document.getElementById('newPartyInput').value = '';
+    bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
+  }
+
+  function addMaterial() {
+    const val = document.getElementById('newMaterialInput').value.trim();
+    if (!val) return;
+    materials.push(val);
+    updateDropdown(materialDropdown, materials, 'material');
+    document.getElementById('newMaterialInput').value = '';
+    bootstrap.Modal.getInstance(document.getElementById('materialModal')).hide();
+  }
+
+  function resetForm() {
+  // Reset only the ticket number to 1
+  document.getElementById('ticketNumber').value = 1;
+  
+  // Optionally, keep the preview and print button hidden
+  document.getElementById('preview').classList.add('d-none');
+  document.getElementById('printBtn').classList.add('d-none');
+  
+  // Reset the alert message container
+  const msg = document.getElementById('message');
+  msg.className = 'alert d-none';
+}
+  async function submitForm() {
+    const tNo = Number(document.getElementById('ticketNumber').value);
+    const truck = document.getElementById('truckNumber').value.trim();
+    const mat = document.getElementById('material').value.trim();
+    const unit = document.getElementById('unit').value.trim();
+    const party = document.getElementById('party').value.trim();
+    const date = document.getElementById('date').value;
+
+    // Create ISO timestamp for time
+    const now = new Date();
+    const isoTime = now.toISOString(); // Full timestamp with date and time
+    document.getElementById('time').value = now.toLocaleTimeString();
+
+    const msg = document.getElementById('message');
+    msg.className = 'alert d-none';
+
+    const { error } = await client
+      .from('tickets')
+      .insert([{
+        ticket_no: tNo,
+        truck_no: truck,
+        material: mat,
+        unit,
+        party,
+        date,
+        time: isoTime
+      }]);
+
+    if (error) {
+      msg.textContent = `Error saving ticket: ${error.message}`;
+      msg.className = 'alert alert-danger mt-3';
+      return;
+    }
+
+    msg.textContent = 'Ticket submitted successfully!';
+    msg.className = 'alert alert-success mt-3';
+
+    const slip = `?? Ticket Slip ??
+
+Ticket #: ${tNo}
+Truck #: ${truck}
+Material: ${mat}
+Unit: ${unit}
+Party: ${party}
+Date: ${date}
+Time: ${now.toLocaleTimeString()}
+
+? Thank you! Drive safe.`;
+
+    const preview = document.getElementById('preview');
+    preview.textContent = slip;
+    preview.classList.remove('d-none');
+
+    document.getElementById('ticketNumber').value = tNo + 1;
+    document.getElementById('printBtn').classList.remove('d-none');
+  }
+
+  function printSlip() {
+    const html = document.getElementById('preview').innerText.replace(/\n/g, '<br>');
+    const w = window.open('', '_blank', 'width=300,height=500');
+    w.document.write(`<html><head><title>Print Slip</title></head><body style="font-family:monospace;font-size:12px;">${html}</body></html>`);
+    w.document.close();
+    w.focus();
+    w.print();
+  }
+
+  document.getElementById('date').valueAsDate = new Date();
+</script>
+
+</body>
+</html>
