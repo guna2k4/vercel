@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>SRI MUTHUMARIAMMAN BLUE METALS </title>
+  <title>SRI MUTHUMARIAMMAN BLUE METALS</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
@@ -20,84 +20,50 @@
     }
     .gradient-btn:hover { opacity:0.9; }
 
-    /* UPDATED preview style to preserve monospace formatting */
     /* Preview container style */
-#preview {
-  background: #fff;
-  border: 1px solid #ccc;
-  width: 80mm;
-  max-width: 100%;
-  padding: 5mm;
-  margin: 20px auto;
-  font-family: monospace;
-  font-size: 14px;
-  white-space: pre-wrap; /* better for wrapping long content without breaking formatting */
-  text-align: left;
-  box-sizing: border-box; /* includes padding inside width */
-  overflow-wrap: break-word; /* break long text if needed */
-  word-break: break-word;
-}
+    #preview {
+      background: #fff;
+      border: 1px solid #ccc;
+      width: 3in;
+      height: 4in;
+      padding: 5mm;
+      margin: 20px auto;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      text-align: left;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
 
-/* Slip text styling */
-.slip-header {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
+    /* Print-specific rules */
+    @media print {
+      body * { visibility: hidden !important; }
+      #preview, #preview * { visibility: visible !important; }
+      #preview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3in;
+        height: 4in;
+        padding: 5mm;
+        box-sizing: border-box;
+      }
+      @page { size: 3in 4in; margin: 0; }
+    }
 
-.slip-body p {
-  margin: 2px 0;
-  line-height: 1.4;
-}
-
-.slip-footer {
-  margin-top: 6px;
-  font-weight: bold;
-}
-
-/* Print-specific rules */
-@media print {
-  body * {
-    visibility: hidden !important;
-  }
-  #preview, #preview * {
-    visibility: visible !important;
-  }
-  #preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 80mm;
-    padding: 5mm;
-    box-sizing: border-box;
-  }
-  @page {
-    size: 80mm auto;
-    margin: 0;
-  }
-}
-
-/* Responsive style for small screens */
-@media(max-width: 768px) {
-  .sidebar {
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid #ccc;
-  }
-  .header-title {
-    font-size: 1.5rem;
-  }
-  #preview {
-    width: 95%;
-  }
-}
+    /* Responsive styles */
+    @media(max-width: 768px) {
+      .sidebar { height: auto; border-right: none; border-bottom: 1px solid #ccc; }
+      .header-title { font-size: 1.5rem; }
+      #preview { width: 95%; height: auto; }
+    }
   </style>
 </head>
 <body>
-
 <div class="container-fluid">
   <div class="row flex-md-nowrap">
-    <!-- Sidebar -->
     <div class="col-md-2 sidebar">
       <h5 class="text-danger fw-bold mb-3">Menu</h5>
       <div class="d-grid gap-2">
@@ -109,10 +75,9 @@
       </div>
     </div>
 
-    <!-- Main -->
     <div class="col-md-10 main-container">
       <div class="card shadow p-4 mb-4">
-        <div class="header-title mb-4">SRI MUTHUMARIAMMAN BLUE METALS </div>
+        <div class="header-title mb-4">SRI MUTHUMARIAMMAN BLUE METALS</div>
         <form id="ticketForm">
           <div class="row mb-3">
             <div class="col-md-6 mb-3">
@@ -197,7 +162,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 <script>
   const SUPABASE_URL = 'https://kiefmcjhsdmgfnqfttnw.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZWZtY2poc2RtZ2ZucWZ0dG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5NTQ4MTYsImV4cCI6MjA2MDUzMDgxNn0.DWR-ZKWzqcCWR8MPFnVRnO3YhiTZr_pwJMQaJaEgRZ4';  const { createClient } = supabase;
+  const SUPABASE_ANON_KEY = '<YOUR_ANON_KEY>';  
+  const { createClient } = supabase;
   const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // SESSION CHECK
@@ -213,18 +179,9 @@
     window.location.href = 'filter.html';
   }
 
-  // localStorage helpers
-  function loadJSON(key, fallback) {
-    const v = localStorage.getItem(key);
-    return v ? JSON.parse(v) : fallback;
-  }
-  function saveJSON(key, obj) {
-    localStorage.setItem(key, JSON.stringify(obj));
-  }
-
-  let parties    = loadJSON('sm_bm_parties', []);
-  let materials  = loadJSON('sm_bm_materials', []);
-  let ticketNum  = loadJSON('sm_bm_ticketNum', 1);
+  let parties = [];
+  let materials = [];
+  let ticketNum = parseInt(localStorage.getItem('sm_bm_ticketNum') || '1');
 
   function updateDropdown(dd, list, inputId) {
     dd.innerHTML = '';
@@ -236,30 +193,44 @@
     });
   }
 
-  function addParty() {
+  async function fetchParties() {
+    const { data, error } = await client.from('parties').select('name');
+    if (!error) {
+      parties = data.map(d => d.name);
+      updateDropdown(document.getElementById('partyDropdown'), parties, 'party');
+    }
+  }
+
+  async function fetchMaterials() {
+    const { data, error } = await client.from('materials').select('name');
+    if (!error) {
+      materials = data.map(d => d.name);
+      updateDropdown(document.getElementById('materialDropdown'), materials, 'material');
+    }
+  }
+
+  async function addParty() {
     const val = document.getElementById('newPartyInput').value.trim();
     if (!val || parties.includes(val)) return;
-    parties.push(val);
-    saveJSON('sm_bm_parties', parties);
-    updateDropdown(document.getElementById('partyDropdown'), parties, 'party');
+    await client.from('parties').insert([{ name: val }]);
+    await fetchParties();
     document.getElementById('newPartyInput').value = '';
     bootstrap.Modal.getInstance(document.getElementById('partyModal')).hide();
   }
 
-  function addMaterial() {
+  async function addMaterial() {
     const val = document.getElementById('newMaterialInput').value.trim();
     if (!val || materials.includes(val)) return;
-    materials.push(val);
-    saveJSON('sm_bm_materials', materials);
-    updateDropdown(document.getElementById('materialDropdown'), materials, 'material');
+    await client.from('materials').insert([{ name: val }]);
+    await fetchMaterials();
     document.getElementById('newMaterialInput').value = '';
     bootstrap.Modal.getInstance(document.getElementById('materialModal')).hide();
   }
 
   function resetForm() {
     ticketNum = 1;
-    saveJSON('sm_bm_ticketNum', ticketNum);
-    document.getElementById('ticketNumber').value = 1;
+    localStorage.setItem('sm_bm_ticketNum', ticketNum);
+    document.getElementById('ticketNumber').value = ticketNum;
     document.getElementById('ticketForm').reset();
     document.getElementById('preview').classList.add('d-none');
     document.getElementById('printBtn').classList.add('d-none');
@@ -282,17 +253,7 @@
     const date  = document.getElementById('date').value;
     const now   = new Date();
 
-    // save to Supabase
-    const { error } = await client.from('tickets').insert([{
-      ticket_no: tNo,
-      truck_no: truck,
-      material: mat,
-      unit,
-      party,
-      date,
-      time: now.toISOString()
-    }]);
-
+    const { error } = await client.from('tickets').insert([{ ticket_no: tNo, truck_no: truck, material: mat, unit, party, date, time: now.toISOString() }]);
     const msg = document.getElementById('message');
     if (error) {
       msg.textContent = `Error saving ticket: ${error.message}`;
@@ -302,7 +263,6 @@
     msg.textContent = 'Ticket submitted successfully!';
     msg.className = 'alert alert-success mt-3';
 
-    // build slip text exactly like your second screenshot
     const lines = [
       '****************************************',
       '   Sri SRI MUTHUMARIAMMAN  ',
@@ -327,11 +287,10 @@
     preview.classList.remove('d-none');
     document.getElementById('printBtn').classList.remove('d-none');
 
-    // clear inputs & increment
-    ['truckNumber','material','unit','party'].forEach(id=>document.getElementById(id).value='');
+    ['truckNumber','material','unit','party'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('date').valueAsDate = new Date();
     ticketNum++;
-    saveJSON('sm_bm_ticketNum', ticketNum);
+    localStorage.setItem('sm_bm_ticketNum', ticketNum);
     document.getElementById('ticketNumber').value = ticketNum;
   }
 
@@ -341,26 +300,23 @@
       .replace(/</g,'&lt;')
       .replace(/>/g,'&gt;')
       .replace(/\n/g,'<br/>');
-    const w = window.open('', '_blank', 'width=300,height=500');
+    const w = window.open('', '_blank');
     w.document.write(`
-      <html>
-        <head><title>Print Slip</title></head>
-        <body style="font-family:monospace;font-size:14px; white-space:pre; text-align:left;">
-          ${html}
-        </body>
-      </html>`);
+      <html><head><title>Print Slip</title>
+      <style>@page{ size:3in 4in; margin:0;} body{ font-family:monospace; font-size:14px; white-space:pre; }</style>
+      </head><body>${html}</body></html>`);
     w.document.close();
     w.focus();
     w.print();
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    updateDropdown(document.getElementById('partyDropdown'), parties, 'party');
-    updateDropdown(document.getElementById('materialDropdown'), materials, 'material');
+  document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('ticketNumber').value = ticketNum;
     document.getElementById('date').valueAsDate = new Date();
     startClock();
+    await fetchParties();
+    await fetchMaterials();
   });
 </script>
 </body>
-              </html>
+</html>
